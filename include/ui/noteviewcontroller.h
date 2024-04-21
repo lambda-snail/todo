@@ -32,6 +32,8 @@ namespace LambdaSnail::Todo::Ui {
 
         std::queue<NoteCommand> m_CommandQueue {};
 
+        bool bIsOpen { true };
+
         void CreateNote(std::string_view const& text);
     };
 

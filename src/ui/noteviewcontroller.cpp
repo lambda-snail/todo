@@ -9,7 +9,7 @@
 
 void LambdaSnail::Todo::Ui::NoteViewController::Render() {
     // Toolbar for notes
-    ImGui::Begin("NoteController");
+    ImGui::Begin("NoteController", &bIsOpen);
         ImGui::BeginChild("Toolbar", ImVec2(0.f, 128.f), ImGuiChildFlags_Border);
             if(ImGui::Button("New Note"))
             {
