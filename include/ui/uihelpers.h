@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 namespace LambdaSnail::Todo::UiHelpers {
-    inline auto get_dpi_scale_factor() -> float {
+    inline auto GetDpiScaleFactor() -> float {
         static float dpi_scale = -1.f;
         if (dpi_scale > 0.f) {
             return dpi_scale;

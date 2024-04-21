@@ -468,7 +468,7 @@ int main(int, char**)
     // - Read 'docs/FONTS.md' for more instructions and details.
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
 
-    float const dpi_scale = LambdaSnail::Todo::UiHelpers::get_dpi_scale_factor();
+    float const dpi_scale = LambdaSnail::Todo::UiHelpers::GetDpiScaleFactor();
 
     ImFontConfig config;
     config.SizePixels = 13 * dpi_scale;

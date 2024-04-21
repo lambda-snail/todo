@@ -6,6 +6,8 @@
 
 namespace LambdaSnail::Todo::Ui {
 
+    static constexpr size_t EditTaskInfoBufferSize = 256;
+
     template<size_t Size = 256>
     struct EditTaskInfo {
         explicit EditTaskInfo(size_t index) : NoteIndex(index) {}
@@ -16,6 +18,8 @@ namespace LambdaSnail::Todo::Ui {
 
     class NoteViewModel {
     public:
+        static constexpr int NoteTextRegionHeight = 128;
+
         NoteViewModel() = delete;
         explicit NoteViewModel(std::shared_ptr<Note> note) : m_Note(std::move(note))
         {

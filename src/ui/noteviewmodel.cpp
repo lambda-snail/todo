@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include "ui/noteviewmodel.h"
 
-#include <iostream>
+#include "ui/uihelpers.h"
 
 bool LambdaSnail::Todo::Ui::NoteViewModel::IsDirty() const
 {
@@ -33,7 +33,7 @@ std::shared_ptr<LambdaSnail::Todo::Note> LambdaSnail::Todo::Ui::NoteViewModel::G
 
 void LambdaSnail::Todo::Ui::NoteViewModel::Render()
 {
-    int flags{ImGuiWindowFlags_NoSavedSettings};
+    int flags{ ImGuiWindowFlags_None };
     if (bIsDirty)
     {
         flags |= ImGuiWindowFlags_UnsavedDocument;
@@ -46,11 +46,10 @@ void LambdaSnail::Todo::Ui::NoteViewModel::Render()
 
     ImGui::Begin(m_Note->Title.data(), &bIsOpen, flags);
     bool bChangedThisFrame = false;
-    bChangedThisFrame = ImGui::InputTextMultiline("TodoText",
+    bChangedThisFrame = ImGui::InputTextMultiline("##",
                                                   m_EditBuffer.data(),
                                                   m_EditBuffer.size(),
-                                                  {ImGui::GetContentRegionAvail().x, -150},
-                                                  //ImGui::GetContentRegionAvail().y },
+                                                  { ImGui::GetContentRegionAvail().x, NoteTextRegionHeight * UiHelpers::GetDpiScaleFactor() },
                                                   ImGuiInputTextFlags_AllowTabInput
     );
 
@@ -79,7 +78,7 @@ void LambdaSnail::Todo::Ui::NoteViewModel::Render()
 
             if (not p_EditTaskInfo)
             {
-                p_EditTaskInfo = std::make_unique<EditTaskInfo<256>>(i);
+                p_EditTaskInfo = std::make_unique<EditTaskInfo<EditTaskInfoBufferSize>>(i);
                 memcpy(p_EditTaskInfo->Buffer.data(), task.Title.c_str(), std::min(p_EditTaskInfo->Buffer.size(), task.Title.size()));
             }
 
