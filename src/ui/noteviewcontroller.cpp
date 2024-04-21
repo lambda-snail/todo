@@ -85,10 +85,6 @@ void LambdaSnail::Todo::Ui::NoteViewController::CreateNote(std::string_view cons
 {
     static int next_id = 0; // TODO: This needs to be serialized as well
 
-    // created_note->NoteId = next_id++;
-    // created_note->Text = text;
-    // created_note->Title = std::format("Note with id: {}", created_note->NoteId);
-
     auto id = next_id++;
     auto created_note = std::make_shared<Note>(id, text.data(), std::format("Note with id: {}", id));
 
