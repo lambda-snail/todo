@@ -18,7 +18,7 @@ namespace LambdaSnail::Todo::Ui {
     class NoteViewController : public Component {
 
     public:
-        explicit NoteViewController(std::unique_ptr<NoteStore> store) : p_NoteStore(std::move(store)) {}
+        explicit NoteViewController(std::unique_ptr<NoteStore> store) : p_NoteStore(std::move(store)), m_NextNoteId(0), bIsOpen(true) {}
 
         void Init() override;
 
@@ -32,9 +32,12 @@ namespace LambdaSnail::Todo::Ui {
 
         std::queue<NoteCommand> m_CommandQueue {};
 
-        bool bIsOpen { true };
+        note_id_t m_NextNoteId;
+        bool bIsOpen;
 
         void CreateNote(std::string_view const& text);
+
+        void FindNextNoteId();
     };
 
 }

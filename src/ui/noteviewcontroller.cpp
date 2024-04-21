@@ -60,7 +60,9 @@ void LambdaSnail::Todo::Ui::NoteViewController::Render() {
         switch(Command)
         {
             case NoteCommand::CommandType::Delete:
+                // TODO: Find a nice way to avoid maintaining two lists like this
                 m_NoteViewModels.erase(std::next(m_NoteViewModels.cbegin(), static_cast<std::iter_difference_t<std::vector<NoteViewModel>::iterator>>(NoteIndex)));
+                m_Notes.erase(std::next(m_Notes.cbegin(), static_cast<std::iter_difference_t<std::vector<Note>::iterator>>(NoteIndex)));
                 break;
             default:
                 std::source_location location{};
@@ -83,18 +85,31 @@ LambdaSnail::Todo::Ui::NoteViewController::~NoteViewController()
 
 void LambdaSnail::Todo::Ui::NoteViewController::CreateNote(std::string_view const& text)
 {
-    static int next_id = 0; // TODO: This needs to be serialized as well
-
-    auto id = next_id++;
+    auto id = m_NextNoteId++;
     auto created_note = std::make_shared<Note>(id, text.data(), std::format("Note with id: {}", id));
 
     m_Notes.push_back(created_note);
     m_NoteViewModels.emplace_back( created_note );
 }
 
+void LambdaSnail::Todo::Ui::NoteViewController::FindNextNoteId() {
+    auto const& max =
+        std::ranges::max_element(std::as_const(m_Notes), [](std::shared_ptr<Note> const& a, std::shared_ptr<Note> const& b)
+    {
+        return a->NoteId < b->NoteId;
+    });
+
+    if(max != std::ranges::end(m_Notes))
+    {
+        m_NextNoteId = (*max)->NoteId + 1;
+    }
+}
+
 void LambdaSnail::Todo::Ui::NoteViewController::Init() {
-    m_Notes = p_NoteStore->LoadNotes(); //TODO: Change VM to point to a note in here
+    m_Notes = p_NoteStore->LoadNotes();
     for(auto const& note : m_Notes) {
         m_NoteViewModels.emplace_back( note );
     }
+
+    FindNextNoteId();
 }
