@@ -77,10 +77,7 @@ void LambdaSnail::Todo::Ui::NoteViewController::Render() {
 
 LambdaSnail::Todo::Ui::NoteViewController::~NoteViewController()
 {
-    if(not m_NoteViewModels.empty())
-    {
-        p_NoteStore->SaveNotes(m_Notes);
-    }
+    p_NoteStore->SaveNotes(m_Notes);
 }
 
 void LambdaSnail::Todo::Ui::NoteViewController::CreateNote(std::string_view const& text)
