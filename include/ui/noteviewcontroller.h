@@ -22,6 +22,8 @@ namespace LambdaSnail::Todo::Ui {
 
         void Init() override;
 
+        [[nodiscard]] bool CloseWindow() const override;
+
         void Render() override;
 
         ~NoteViewController() override;;

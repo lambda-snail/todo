@@ -499,8 +499,12 @@ int main(int, char**)
 
     app.AddComponent(std::move(note_controller));
 
+    glfwHideWindow(window);
+    io.ConfigViewportsNoDecoration = false;
+    io.ConfigViewportsNoAutoMerge = true;
+
     // Main loop
-    while (!glfwWindowShouldClose(window))
+    while (not glfwWindowShouldClose(window) and not app.ShouldCloseApplication())
     {
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.

@@ -110,3 +110,7 @@ void LambdaSnail::Todo::Ui::NoteViewController::Init() {
 
     FindNextNoteId();
 }
+
+bool LambdaSnail::Todo::Ui::NoteViewController::CloseWindow() const {
+    return not bIsOpen;
+}

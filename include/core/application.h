@@ -9,10 +9,14 @@ namespace LambdaSnail::Todo::Core {
     using namespace Ui;
 
     class Application {
-        std::vector<std::unique_ptr<Component>> m_Views{};
-
     public:
         void Render();
         void AddComponent(std::unique_ptr<Component> view);
+
+        [[nodiscard]] bool ShouldCloseApplication() const;
+
+    private:
+        std::vector<std::unique_ptr<Component>> m_Views{};
+        bool bShouldClose { false };
     };
 };

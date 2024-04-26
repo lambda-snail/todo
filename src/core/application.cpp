@@ -17,6 +17,7 @@ void LambdaSnail::Todo::Core::Application::Render() {
 
     for(auto const& view : m_Views) {
         view->Render();
+        bShouldClose = view->CloseWindow();
     }
 
     //ImGui::End();
@@ -25,4 +26,8 @@ void LambdaSnail::Todo::Core::Application::Render() {
 
 void LambdaSnail::Todo::Core::Application::AddComponent(std::unique_ptr<Component> view) {
     m_Views.push_back(std::move(view));
+}
+
+bool LambdaSnail::Todo::Core::Application::ShouldCloseApplication() const {
+    return bShouldClose;
 }
