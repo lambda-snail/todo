@@ -20,6 +20,10 @@ add_executable(todo src/main.cpp
 
 target_include_directories(todo PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+if(WIN32)
+    set_target_properties(todo PROPERTIES WIN32_EXECUTABLE True)
+endif()
+
 target_link_libraries(todo
         PRIVATE
         imgui::imgui

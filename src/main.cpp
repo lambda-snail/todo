@@ -40,6 +40,10 @@
 #define APP_USE_VULKAN_DEBUG_REPORT
 #endif
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 // Data
 static VkAllocationCallbacks*   g_Allocator = nullptr;
 static VkInstance               g_Instance = VK_NULL_HANDLE;
@@ -384,7 +388,14 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
 }
 
 // Main code
-int main(int, char**)
+
+#ifdef WIN32
+int APIENTRY WinMain(HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine, int nCmdShow)
+#else
+int main(int argc, char** argv)
+#endif
 {
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -483,12 +494,17 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
 
-
     ImGui::GetStyle().ScaleAllSizes(dpi_scale);
 
     // Our state
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    // TODO: Closing the command bar closes the application
+    // From https://github.com/ocornut/imgui/issues/3680
+    io.ConfigViewportsNoDecoration = false;
+    io.ConfigViewportsNoAutoMerge = false;
+    glfwHideWindow(window);
 
     LambdaSnail::Todo::Core::Application app;
 
