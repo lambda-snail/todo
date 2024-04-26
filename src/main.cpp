@@ -499,6 +499,8 @@ int main(int, char**)
 
     app.AddComponent(std::move(note_controller));
 
+    // Hide the main glfw window
+    // See: https://github.com/ocornut/imgui/issues/3680
     glfwHideWindow(window);
     io.ConfigViewportsNoDecoration = false;
     io.ConfigViewportsNoAutoMerge = true;
