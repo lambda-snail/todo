@@ -12,7 +12,7 @@ add_executable(todo main.cpp
         src/pages/todo_page.cpp
         src/pages/todo_page.hpp)
 
-target_link_libraries(todo PUBLIC wt wthttp)
+target_link_libraries(todo PUBLIC wt wthttp wtdbo wtdbosqlite3)
 
 add_custom_command(
         TARGET todo PRE_BUILD
