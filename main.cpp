@@ -1,13 +1,24 @@
+#include "pages/authentication_page.hpp"
+#include "src/application/session.hpp"
 #include "src/components/todo_item_view.hpp"
 #include "src/components/todo_view.hpp"
 #include "src/pages/todo_page.hpp"
 
+#include <Wt/Auth/AuthService.h>
+#include <Wt/Auth/FacebookService.h>
+#include <Wt/Auth/GoogleService.h>
+#include <Wt/Auth/HashFunction.h>
+#include <Wt/Auth/PasswordService.h>
+#include <Wt/Auth/PasswordStrengthValidator.h>
+#include <Wt/Auth/PasswordVerifier.h>
+#include <Wt/Auth/AuthWidget.h>
+#include <Wt/Dbo/Exception.h>
 #include <Wt/WApplication.h>
 #include <Wt/WBootstrap5Theme.h>
 #include <Wt/WBreak.h>
 #include <Wt/WContainerWidget.h>
-#include <Wt/WLineEdit.h>
 #include <Wt/WPushButton.h>
+#include <Wt/WServer.h>
 #include <Wt/WStackedWidget.h>
 #include <Wt/WTemplate.h>
 
@@ -106,8 +117,6 @@ TodoApplication::TodoApplication(const Wt::WEnvironment& env) : WApplication(env
     // });
 }
 
-void TodoApplication::showTodoList() { m_button->setText("Greeted!"); }
-
 void TodoApplication::handleInternalPath(std::string const& path)
 {
     // if (session_.login().loggedIn()) {
@@ -120,36 +129,119 @@ void TodoApplication::handleInternalPath(std::string const& path)
     //}
 }
 
+
+
+
+// TODO: Merge into todo application
+class AuthApplication : public Wt::WApplication {
+public:
+    explicit AuthApplication(const Wt::WEnvironment& env, Wt::Auth::AuthService& auth_service, Wt::Auth::PasswordService& password_service, std::vector<std::unique_ptr<Wt::Auth::OAuthService>>& oauth_services)
+      : Wt::WApplication(env),
+        m_session(appRoot() + "auth.db", auth_service, password_service, oauth_services)
+    {
+        m_session.login().changed().connect(this, &AuthApplication::authEvent);
+
+        root()->addStyleClass("container");
+
+        auto auth_page = std::make_unique<LambdaSnail::todo::pages::authentication_page>(m_session);
+
+        auth_page->model()->addPasswordAuth(&m_session.password_auth());
+        auth_page->model()->addOAuth(m_session.oauth());
+        auth_page->setRegistrationEnabled(true);
+
+        auth_page->processEnvironment();
+
+        root()->addWidget(std::move(auth_page));
+    }
+
+    void authEvent() {
+        if (m_session.login().loggedIn()) {
+            const Wt::Auth::User& u = m_session.login().user();
+            log("notice")
+              << "User " << u.id()
+              << " (" << u.identity(Wt::Auth::Identity::LoginName) << ")"
+              << " logged in.";
+        } else
+            log("notice") << "User logged out.";
+    }
+
+private:
+    LambdaSnail::todo::application::Session m_session;
+};
+
+
+// TODO: Find some better place to put this
+void configure_auth(Wt::Auth::AuthService& auth_service, Wt::Auth::PasswordService& password_service, std::vector<std::unique_ptr<Wt::Auth::OAuthService>>& oauth_services)
+{
+    auth_service.setAuthTokensEnabled(true, "logincookie");
+    auth_service.setEmailVerificationEnabled(true);
+    auth_service.setEmailVerificationRequired(true);
+
+    auto verifier = std::make_unique<Wt::Auth::PasswordVerifier>();
+    verifier->addHashFunction(std::make_unique<Wt::Auth::BCryptHashFunction>(7));
+    password_service.setVerifier(std::move(verifier));
+    password_service.setPasswordThrottle(std::make_unique<Wt::Auth::AuthThrottle>());
+    password_service.setStrengthValidator(std::make_unique<Wt::Auth::PasswordStrengthValidator>());
+
+    if (Wt::Auth::GoogleService::configured()) {
+        oauth_services.push_back(std::make_unique<Wt::Auth::GoogleService>(auth_service));
+    }
+
+    if (Wt::Auth::FacebookService::configured()) {
+        oauth_services.push_back(std::make_unique<Wt::Auth::FacebookService>(auth_service));
+    }
+
+    for (const auto& oAuthService : oauth_services) {
+        oAuthService->generateRedirectEndpoint();
+    }
+}
+
+// <label for="${id:favourite-pet}">Favourite pet:
+//                     ${name class="Wt-info"}
+// </label>
+// ${favourite-pet}
+
 int main(int argc, char** argv)
 {
-    /*
-     * Your main method may set up some shared resources, but should then
-     * start the server application (FastCGI or httpd) that starts listening
-     * for requests, and handles all of the application life cycles.
-     *
-     * The last argument to WRun specifies the function that will instantiate
-     * new application objects. That function is executed when a new user surfs
-     * to the Wt application, and after the library has negotiated browser
-     * support. The function should return a newly instantiated application
-     * object.
-     */
-    return Wt::WRun(argc, argv, [](const Wt::WEnvironment& env) {
-        auto app = std::make_unique<TodoApplication>(env);
-        app->setTheme(std::make_shared<Wt::WBootstrap5Theme>());
-        app->useStyleSheet("resources/style/main-content.css");
+    Wt::Auth::AuthService auth_service;
+    Wt::Auth::PasswordService password_service(auth_service);
+    std::vector<std::unique_ptr<Wt::Auth::OAuthService>> oauth_services;
 
-        app->messageResourceBundle().use("resources/pages/main-layout");
-        app->messageResourceBundle().use("resources/pages/todo");
-        app->messageResourceBundle().use("resources/components/todo-components");
+    configure_auth(auth_service, password_service, oauth_services);
 
-        // // resolve a string using the resource bundle
-        // auto welcome = std::make_unique<Wt::WText>(
-        //                  tr("welcome-text").arg("Bart"));
+    try {
+        Wt::WServer server{argc, argv, WTHTTP_CONFIGURATION};
 
-        /*
-         * You could read information from the environment to decide whether
-         * the user has permission to start a new application
-         */
-        return std::move(app);
-    });
+        server.addEntryPoint(Wt::EntryPointType::Application, [&](const Wt::WEnvironment& env) {
+                //auto app = std::make_unique<TodoApplication>(env);
+                auto app = std::make_unique<AuthApplication>(env, auth_service, password_service, oauth_services);
+
+                app->setTheme(std::make_shared<Wt::WBootstrap5Theme>());
+                app->useStyleSheet("resources/style/main-content.css");
+
+                app->messageResourceBundle().use("resources/pages/main-layout");
+                app->messageResourceBundle().use("resources/pages/auth");
+                app->messageResourceBundle().use("resources/pages/todo");
+
+                app->messageResourceBundle().use("resources/components/todo-components");
+
+                // // resolve a string using the resource bundle
+                // auto welcome = std::make_unique<Wt::WText>(
+                //                  tr("welcome-text").arg("Bart"));
+
+                /*
+                 * You could read information from the environment to decide whether
+                 * the user has permission to start a new application
+                 */
+                return std::move(app);
+            });
+
+        server.run();
+    } catch (Wt::WServer::Exception& e) {
+        std::cerr << e.what() << '\n';
+    } catch (Wt::Dbo::Exception& e) {
+        std::cerr << "Dbo exception: " << e.what() << '\n';
+    } catch (std::exception& e) {
+        std::cerr << "exception: " << e.what() << '\n';
+    }
 }

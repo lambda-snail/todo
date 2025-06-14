@@ -10,7 +10,19 @@ add_executable(todo main.cpp
         src/components/todo_view.hpp
         src/todo.hpp
         src/pages/todo_page.cpp
-        src/pages/todo_page.hpp)
+        src/pages/todo_page.hpp
+        src/application/user.hpp
+        src/application/user.cpp
+        src/application/session.cpp
+        src/application/session.hpp
+        src/models/user_details.cpp
+        src/models/user_details.hpp
+        src/pages/authentication_page.cpp
+        src/pages/authentication_page.hpp
+        src/pages/registration_view.cpp
+        src/pages/registration_view.hpp)
+
+target_include_directories(todo PUBLIC src)
 
 target_link_libraries(todo PUBLIC wt wthttp wtdbo wtdbosqlite3)
 
