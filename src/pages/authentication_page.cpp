@@ -10,18 +10,7 @@ LambdaSnail::todo::pages::authentication_page::authentication_page(application::
 std::unique_ptr<Wt::WWidget>
 LambdaSnail::todo::pages::authentication_page::createRegistrationView(Wt::Auth::Identity const& id)
 {
-    // auto model = createRegistrationModel();
-    //
-    // if (id.isValid())
-    //     model->registerIdentified(id);
-    //
-    // std::unique_ptr<Wt::Auth::RegistrationWidget> w(new Wt::Auth::RegistrationWidget(this));
-    // w->setModel(std::move(model));
-    // return w;
-
-    Wt::log("info") << "create registration view: " << id.id();
-
-    auto registrationView = std::make_unique<registration_view>(m_session, this);
+    auto view = std::make_unique<registration_view>(m_session, this);
     std::unique_ptr<Wt::Auth::RegistrationModel> model = createRegistrationModel();
 
     if (id.isValid())
@@ -29,11 +18,11 @@ LambdaSnail::todo::pages::authentication_page::createRegistrationView(Wt::Auth::
         model->registerIdentified(id);
     }
 
-    registrationView->setModel(std::move(model));
+    view->setModel(std::move(model));
 
     // This is required otherwise the modal will not show up (due to a display:none that is not
     // cleared by the current built-in widget)
-    registrationView->show();
+    //view->show();
 
-    return std::move(registrationView);
+    return std::move(view);
 }

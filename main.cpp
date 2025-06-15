@@ -141,7 +141,7 @@ public:
     {
         m_session.login().changed().connect(this, &AuthApplication::authEvent);
 
-        root()->addStyleClass("container");
+        //root()->addStyleClass("container");
 
         auto auth_page = std::make_unique<LambdaSnail::todo::pages::authentication_page>(m_session);
 
@@ -175,10 +175,12 @@ void configure_auth(Wt::Auth::AuthService& auth_service, Wt::Auth::PasswordServi
 {
     auth_service.setAuthTokensEnabled(true, "logincookie");
     auth_service.setEmailVerificationEnabled(true);
-    auth_service.setEmailVerificationRequired(true);
+
+    // TODO: Only for testing
+    auth_service.setEmailVerificationRequired(false);
 
     auto verifier = std::make_unique<Wt::Auth::PasswordVerifier>();
-    verifier->addHashFunction(std::make_unique<Wt::Auth::BCryptHashFunction>(7));
+    verifier->addHashFunction(std::make_unique<Wt::Auth::BCryptHashFunction>(12));
     password_service.setVerifier(std::move(verifier));
     password_service.setPasswordThrottle(std::make_unique<Wt::Auth::AuthThrottle>());
     password_service.setStrengthValidator(std::make_unique<Wt::Auth::PasswordStrengthValidator>());

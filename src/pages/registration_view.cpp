@@ -17,13 +17,15 @@ LambdaSnail::todo::pages::registration_view::registration_view(
 std::unique_ptr<Wt::WWidget>
 LambdaSnail::todo::pages::registration_view::createFormWidget(Wt::WFormModel::Field field)
 {
-    if (field == models::user_details_model::s_name_field) {
-        return std::make_unique<Wt::WLineEdit>();
-    }
-    else
-    {
-        return Wt::Auth::RegistrationWidget::createFormWidget(field);
-    }
+    return Wt::Auth::RegistrationWidget::createFormWidget(field);
+
+    // if (field == models::user_details_model::s_name_field) {
+    //     return std::make_unique<Wt::WLineEdit>();
+    // }
+    // else
+    // {
+    //     return Wt::Auth::RegistrationWidget::createFormWidget(field);
+    // }
 }
 
 bool LambdaSnail::todo::pages::registration_view::validate()
@@ -40,5 +42,5 @@ bool LambdaSnail::todo::pages::registration_view::validate()
 
 void LambdaSnail::todo::pages::registration_view::registerUserDetails(Wt::Auth::User& user)
 {
-    m_details_model->save(user);
+    //m_details_model->save(user);
 }

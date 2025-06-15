@@ -12,6 +12,7 @@ LambdaSnail::todo::application::Session::Session(
         m_oauth_services(oauth_services)
 {
     auto connection = std::make_unique<Wt::Dbo::backend::Sqlite3>(sqliteDb);
+    connection->setProperty("show-queries", "true");
     setConnection(std::move(connection));
 
     mapClass<application::user>("user");
