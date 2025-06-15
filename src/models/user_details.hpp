@@ -11,7 +11,7 @@ namespace LambdaSnail::todo::models
     public:
         static const Field s_name_field;
 
-        user_details_model(application::Session& session);
+        explicit user_details_model(application::Session& session);
 
         void save(const Wt::Auth::User& user);
 
