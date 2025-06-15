@@ -95,3 +95,7 @@
     padding-left: 2em;
     border-left: solid 1px #b7ddf2;
 }
+
+img.Wt-auth-icon {
+    margin: 1rem;
+}

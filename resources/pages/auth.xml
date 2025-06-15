@@ -7,7 +7,7 @@
 
             ${password-description}
 
-            <div class="Wt-fields">
+            <div class="Wt-fields row">
                 ${<if:user-name>}
                 <label for="${id:user-name}">${user-name-label}
                     ${user-name-info class="Wt-info"}
@@ -41,9 +41,10 @@
             ${<if:oauth>}
             <br clear="both" />
             ${oauth-description}
-            <label>${tr:Wt.Auth.oauth}
-                <span class="Wt-info">${tr:Wt.Auth.oauth-info}</span>
-            </label>
+            <div>
+                ${tr:Wt.Auth.oauth}
+            </div>
+            <div class="Wt-info">${tr:Wt.Auth.oauth-info}</div>
             ${icons}
             ${</if:oauth>}
 
