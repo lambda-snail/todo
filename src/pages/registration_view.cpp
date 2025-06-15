@@ -42,5 +42,5 @@ bool LambdaSnail::todo::pages::registration_view::validate()
 
 void LambdaSnail::todo::pages::registration_view::registerUserDetails(Wt::Auth::User& user)
 {
-    //m_details_model->save(user);
+    m_details_model->save(user);
 }

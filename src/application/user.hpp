@@ -15,12 +15,13 @@ namespace LambdaSnail::todo::application
         //std::string name;
         //Wt::WString name;
         Wt::Dbo::weak_ptr<auth_info_t> m_auth_info;
+        Wt::WDate registration_date;
 
         template<class Action>
         void persist(Action& a)
         {
-            //Wt::Dbo::field(a, name,         "name");
-            Wt::Dbo::hasOne(a, m_auth_info, "user");
+            Wt::Dbo::field(a, registration_date,    "registration_date");
+            Wt::Dbo::hasOne(a, m_auth_info,         "user");
         }
     };
 }
