@@ -5,13 +5,13 @@
 #include "src/pages/todo_page.hpp"
 
 #include <Wt/Auth/AuthService.h>
+#include <Wt/Auth/AuthWidget.h>
 #include <Wt/Auth/FacebookService.h>
 #include <Wt/Auth/GoogleService.h>
 #include <Wt/Auth/HashFunction.h>
 #include <Wt/Auth/PasswordService.h>
 #include <Wt/Auth/PasswordStrengthValidator.h>
 #include <Wt/Auth/PasswordVerifier.h>
-#include <Wt/Auth/AuthWidget.h>
 #include <Wt/Dbo/Exception.h>
 #include <Wt/WApplication.h>
 #include <Wt/WBootstrap5Theme.h>
@@ -52,7 +52,8 @@ TodoApplication::TodoApplication(const Wt::WEnvironment& env) : WApplication(env
     // m_button = t->bindWidget("greeting-button", std::make_unique<Wt::WPushButton>("Greet!"));
     //  m_button->clicked().connect(this, &TodoApplication::showTodoList);
 
-    t->doJavaScript("window.toggleSidebar = function() { const sidebar = document.querySelector('.sidebar'); sidebar.classList.toggle('collapsed'); }");
+    t->doJavaScript("window.toggleSidebar = function() { const sidebar = "
+                    "document.querySelector('.sidebar'); sidebar.classList.toggle('collapsed'); }");
 
     m_widget_stack = t->bindWidget("main-content", std::make_unique<Wt::WStackedWidget>());
 
@@ -66,10 +67,8 @@ TodoApplication::TodoApplication(const Wt::WEnvironment& env) : WApplication(env
     //  item->register_on_checked([]() { std::cout << "checked" << std::endl; });
     //   item->register_on_unchecked([]() { std::cout << "UNchecked" << std::endl; });
 
-
-
-    auto* item = m_widget_stack->addWidget(
-        std::move(std::make_unique<LambdaSnail::todo::todo_page>()));
+    auto* item =
+        m_widget_stack->addWidget(std::move(std::make_unique<LambdaSnail::todo::todo_page>()));
 
     m_widget_stack->setCurrentWidget(item);
 
@@ -129,49 +128,92 @@ void TodoApplication::handleInternalPath(std::string const& path)
     //}
 }
 
-
-
-
 // TODO: Merge into todo application
-class AuthApplication : public Wt::WApplication {
-public:
-    explicit AuthApplication(const Wt::WEnvironment& env, Wt::Auth::AuthService& auth_service, Wt::Auth::PasswordService& password_service, std::vector<std::unique_ptr<Wt::Auth::OAuthService>>& oauth_services)
-      : Wt::WApplication(env),
-        m_session(appRoot() + "auth.db", auth_service, password_service, oauth_services)
+class AuthApplication : public Wt::WApplication
+{
+  public:
+    explicit AuthApplication(const Wt::WEnvironment& env,
+                             Wt::Auth::AuthService& auth_service,
+                             Wt::Auth::PasswordService& password_service,
+                             std::vector<std::unique_ptr<Wt::Auth::OAuthService>>& oauth_services)
+        : Wt::WApplication(env),
+          m_session(appRoot() + "auth.db", auth_service, password_service, oauth_services)
     {
         m_session.login().changed().connect(this, &AuthApplication::authEvent);
+        WApplication::instance()->internalPathChanged().connect(
+            this, &AuthApplication::handleInternalPath);
 
-        //root()->addStyleClass("container");
+        // root()->addStyleClass("container");
 
         auto auth_page = std::make_unique<LambdaSnail::todo::pages::authentication_page>(m_session);
 
         auth_page->model()->addPasswordAuth(&m_session.password_auth());
         auth_page->model()->addOAuth(m_session.oauth());
         auth_page->setRegistrationEnabled(true);
-
         auth_page->processEnvironment();
 
         root()->addWidget(std::move(auth_page));
     }
 
-    void authEvent() {
+    void setUpAuthenticatedContent()
+    {
+        auto t = std::make_unique<Wt::WTemplate>(Wt::WString::tr("main-layout"));
+
+        t->doJavaScript("window.toggleSidebar = function() { const sidebar = "
+                        "document.querySelector('.sidebar'); "
+                        "sidebar.classList.toggle('collapsed'); }");
+
+        m_widget_stack = t->bindWidget("main-content", std::make_unique<Wt::WStackedWidget>());
+
+        auto* item =
+            m_widget_stack->addWidget(std::move(std::make_unique<LambdaSnail::todo::todo_page>()));
+
+        m_widget_stack->setCurrentWidget(item);
+
+        root()->clear();
+        root()->addWidget(std::move(t));
+    }
+
+    void authEvent()
+    {
         if (m_session.login().loggedIn()) {
+            setInternalPath("/list", true);
             const Wt::Auth::User& u = m_session.login().user();
-            log("notice")
-              << "User " << u.id()
-              << " (" << u.identity(Wt::Auth::Identity::LoginName) << ")"
-              << " logged in.";
+            log("notice") << "User " << u.id() << " (" << u.identity(Wt::Auth::Identity::LoginName)
+                          << ")"
+                          << " logged in.";
+
+            //setUpAuthenticatedContent();
         } else
             log("notice") << "User logged out.";
     }
 
-private:
+    void handleInternalPath(std::string const& path)
+    {
+        log("path") << path;
+
+        setUpAuthenticatedContent();
+
+        // // if (session_.login().loggedIn()) {
+        // if (path == "/list") {
+        //     // m_widget_stack->setCurrentWidget();
+        // }
+        //
+        // else
+        //     WApplication::instance()->setInternalPath("/play", true);
+        // //}
+    }
+
+  private:
     LambdaSnail::todo::application::Session m_session;
+
+    Wt::WStackedWidget* m_widget_stack;
 };
 
-
 // TODO: Find some better place to put this
-void configure_auth(Wt::Auth::AuthService& auth_service, Wt::Auth::PasswordService& password_service, std::vector<std::unique_ptr<Wt::Auth::OAuthService>>& oauth_services)
+void configure_auth(Wt::Auth::AuthService& auth_service,
+                    Wt::Auth::PasswordService& password_service,
+                    std::vector<std::unique_ptr<Wt::Auth::OAuthService>>& oauth_services)
 {
     auth_service.setAuthTokensEnabled(true, "logincookie");
     auth_service.setEmailVerificationEnabled(true);
@@ -215,28 +257,29 @@ int main(int argc, char** argv)
         Wt::WServer server{argc, argv, WTHTTP_CONFIGURATION};
 
         server.addEntryPoint(Wt::EntryPointType::Application, [&](const Wt::WEnvironment& env) {
-                //auto app = std::make_unique<TodoApplication>(env);
-                auto app = std::make_unique<AuthApplication>(env, auth_service, password_service, oauth_services);
+            // auto app = std::make_unique<TodoApplication>(env);
+            auto app = std::make_unique<AuthApplication>(
+                env, auth_service, password_service, oauth_services);
 
-                app->setTheme(std::make_shared<Wt::WBootstrap5Theme>());
-                app->useStyleSheet("resources/style/main-content.css");
+            app->setTheme(std::make_shared<Wt::WBootstrap5Theme>());
+            app->useStyleSheet("resources/style/main-content.css");
 
-                app->messageResourceBundle().use("resources/pages/main-layout");
-                app->messageResourceBundle().use("resources/pages/auth");
-                app->messageResourceBundle().use("resources/pages/todo");
+            app->messageResourceBundle().use("resources/pages/main-layout");
+            app->messageResourceBundle().use("resources/pages/auth");
+            app->messageResourceBundle().use("resources/pages/todo");
 
-                app->messageResourceBundle().use("resources/components/todo-components");
+            app->messageResourceBundle().use("resources/components/todo-components");
 
-                // // resolve a string using the resource bundle
-                // auto welcome = std::make_unique<Wt::WText>(
-                //                  tr("welcome-text").arg("Bart"));
+            // // resolve a string using the resource bundle
+            // auto welcome = std::make_unique<Wt::WText>(
+            //                  tr("welcome-text").arg("Bart"));
 
-                /*
-                 * You could read information from the environment to decide whether
-                 * the user has permission to start a new application
-                 */
-                return std::move(app);
-            });
+            /*
+             * You could read information from the environment to decide whether
+             * the user has permission to start a new application
+             */
+            return std::move(app);
+        });
 
         server.run();
     } catch (Wt::WServer::Exception& e) {
