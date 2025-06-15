@@ -2,7 +2,7 @@
 
 #include <Wt/WTemplate.h>
 
-todo_item_view::todo_item_view(LambdaSnail::todo::todo_item const& item) :todo_item_view(item.id, item.text, item.is_done) {}
+todo_item_view::todo_item_view(LambdaSnail::todo::todo_item const& item) :todo_item_view(item.id(), item.text, item.is_done) {}
 todo_item_view::todo_item_view(size_t id, std::string const& text, bool is_done) : m_id(id), m_is_done(is_done)
 {
   auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-item"));

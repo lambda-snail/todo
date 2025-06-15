@@ -4,8 +4,8 @@
 
 #include <Wt/WContainerWidget.h>
 
+#include "../models/todo.hpp"
 #include "todo_item_view.hpp"
-#include "../todo.hpp"
 
 namespace LambdaSnail::todo
 {
@@ -15,7 +15,7 @@ namespace LambdaSnail::todo
         explicit todo_view(todo& item);
 
         void add_item(todo_item_view* item);
-        void remove_item(todo_item_view::id_t id);
+        void remove_item(Wt::Dbo::ptr<todo_item> const& item);
     private:
         std::vector<todo_item_view*> m_todo_views{};
 

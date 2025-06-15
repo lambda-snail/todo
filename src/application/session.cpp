@@ -2,6 +2,8 @@
 
 #include "session.hpp"
 
+#include "models/todo.hpp"
+
 LambdaSnail::todo::application::Session::Session(
     std::string const& sqliteDb,
     Wt::Auth::AuthService& auth_service,
@@ -19,6 +21,9 @@ LambdaSnail::todo::application::Session::Session(
     mapClass<auth_info_t>("auth_info");
     mapClass<auth_info_t::AuthIdentityType>("auth_identity");
     mapClass<auth_info_t::AuthTokenType>("auth_token");
+
+    mapClass<todo>("todo");
+    mapClass<todo_item>("todo_item");
 
     try {
         createTables();

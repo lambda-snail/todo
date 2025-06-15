@@ -1,0 +1,36 @@
+#pragma once
+
+#include <Wt/Dbo/Dbo.h>
+
+#include <string>
+
+namespace LambdaSnail::todo
+{
+    typedef size_t id_t;
+
+    struct todo_item : public Wt::Dbo::Dbo<todo_item>
+    {
+        std::string text;
+        bool is_done { false };
+        Wt::Dbo::ptr<class todo> todo;
+
+        template<class Action>
+        void persist(Action& a)
+        {
+            Wt::Dbo::field(a, text,     "text");
+            Wt::Dbo::field(a, is_done,  "is_done");
+            Wt::Dbo::belongsTo(a, todo, "todo");
+        }
+    };
+
+    struct todo : public Wt::Dbo::Dbo<todo>
+    {
+        Wt::Dbo::collection<Wt::Dbo::ptr<todo_item>> items;
+
+        template<class Action>
+        void persist(Action& a)
+        {
+            Wt::Dbo::hasMany(a, items, Wt::Dbo::ManyToOne, "todo");
+        }
+    };
+}

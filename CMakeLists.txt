@@ -8,7 +8,7 @@ add_executable(todo main.cpp
         src/components/todo_item_view.hpp
         src/components/todo_view.cpp
         src/components/todo_view.hpp
-        src/todo.hpp
+        src/models/todo.hpp
         src/pages/todo_page.cpp
         src/pages/todo_page.hpp
         src/application/user.hpp

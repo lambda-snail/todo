@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../todo.hpp"
+#include "../models/todo.hpp"
 
 #include <Wt/WCheckBox.h>
 #include <Wt/WContainerWidget.h>
