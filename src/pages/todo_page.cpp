@@ -12,11 +12,14 @@ LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_sessi
 
     //m_current_item =
 
+    Wt::Dbo::Transaction transaction(m_session);
     m_current_item = m_session.addNew<todo>();
+    m_current_item.modify()->owner = m_session.user();
 
     auto item1 = Wt::Dbo::make_ptr<todo_item>();
     item1.modify()->is_done = true;
     item1.modify()->text = "Hello TODO";
+
 
     auto item2 = Wt::Dbo::make_ptr<todo_item>();
     item2.modify()->is_done = false;

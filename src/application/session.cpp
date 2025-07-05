@@ -13,6 +13,7 @@ LambdaSnail::todo::application::Session::Session(
         m_password_service(password_service),
         m_oauth_services(oauth_services)
 {
+    // TODO: Use connection pool for entire application instead
     auto connection = std::make_unique<Wt::Dbo::backend::Sqlite3>(sqliteDb);
     //connection->setProperty("show-queries", "true");
     setConnection(std::move(connection));

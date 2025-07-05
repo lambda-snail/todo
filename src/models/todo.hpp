@@ -6,7 +6,11 @@
 
 namespace LambdaSnail::todo
 {
-    typedef size_t id_t;
+namespace application
+{
+class user;
+}
+typedef size_t id_t;
 
     struct todo_item : public Wt::Dbo::Dbo<todo_item>
     {
@@ -26,11 +30,13 @@ namespace LambdaSnail::todo
     struct todo : public Wt::Dbo::Dbo<todo>
     {
         Wt::Dbo::collection<Wt::Dbo::ptr<todo_item>> items;
+        Wt::Dbo::ptr<application::user> owner;
 
         template<class Action>
         void persist(Action& a)
         {
             Wt::Dbo::hasMany(a, items, Wt::Dbo::ManyToOne, "todo");
+            Wt::Dbo::belongsTo(a, owner, "owner");
         }
     };
 }
