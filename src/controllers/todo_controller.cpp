@@ -75,11 +75,15 @@ void LambdaSnail::todo::TodoController::addTodoItem(std::string const& text, boo
 
     Wt::Dbo::Transaction transaction(m_Session);
 
-    auto item = m_Session.addNew<todo_item>();
-    item.modify()->text = text;
+    auto item              = m_Session.addNew<todo_item>();
+    item.modify()->text    = text;
     item.modify()->is_done = isDone;
 
     m_CurrentItem.modify()->items.insert(item);
     transaction.commit();
     signal_TodoItemAdded(item);
+}
+void LambdaSnail::todo::TodoController::updateTodoItem(Wt::Dbo::ptr<todo_item> item)
+{
+    Wt::Dbo::Transaction transaction(m_Session);
 }

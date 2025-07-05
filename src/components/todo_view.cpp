@@ -72,9 +72,9 @@ void LambdaSnail::todo::todo_view::rebuildView()
 
 
 
-todo_item_view* LambdaSnail::todo::todo_view::addTodoItemView(Wt::Dbo::ptr<todo_item> item)
+TodoItemView* LambdaSnail::todo::todo_view::addTodoItemView(Wt::Dbo::ptr<todo_item> item)
 {
-    return m_ItemContainer->addNew<todo_item_view>(item->id(), item->text, item->is_done);
+    return m_ItemContainer->addNew<TodoItemView>(item, m_TodoController);
 }
 
 void LambdaSnail::todo::todo_view::todoItemAdded(Wt::Dbo::ptr<todo_item> item)

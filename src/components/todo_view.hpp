@@ -25,7 +25,7 @@ class todo_view : public Wt::WContainerWidget
         void addItem();
         void rebuildView();
 
-        todo_item_view* addTodoItemView(Wt::Dbo::ptr<todo_item> item);
+        TodoItemView* addTodoItemView(Wt::Dbo::ptr<todo_item> item);
         void todoItemAdded(Wt::Dbo::ptr<todo_item> item);
 
         Wt::JSignal<> signal_AddTodoItemPressed;
