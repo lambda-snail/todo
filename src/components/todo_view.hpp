@@ -17,8 +17,7 @@ namespace LambdaSnail::todo
         void add_item(todo_item_view* item);
         void remove_item(Wt::Dbo::ptr<todo_item> const& item);
     private:
-        std::vector<todo_item_view*> m_todo_views{};
-
         todo& m_item;
+        Wt::WContainerWidget* m_ItemContainer;
     };
 }

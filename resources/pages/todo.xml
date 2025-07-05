@@ -24,20 +24,8 @@
 
         <div class="d-flex flex-grow-1" style="gap:2rem">
 
-            <div class="card flex-fill" style="m-2 w-50">
-                <div class="card-body">
-                    <div href="#" class="list-group-item list-group-item-action" aria-current="true">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">${title}</h5>
-                            <small>${last-updated}</small>
-                        </div>
-
-                        ${todo}
-
-                        <p class="m-2">Some text describing the task.</p>
-                    </div>
-
-                </div>
+            <div class="flex-fill">
+                ${todo}
             </div>
 
             <div class="flex-fill">

@@ -2,6 +2,7 @@
 
 #include <Wt/Dbo/Dbo.h>
 
+#include <Wt/WDateTime.h>
 #include <string>
 
 namespace LambdaSnail::todo
@@ -30,6 +31,8 @@ typedef size_t id_t;
     struct todo : public Wt::Dbo::Dbo<todo>
     {
         std::string title;
+        std::string description;
+        Wt::WDateTime modified;
 
         Wt::Dbo::collection<Wt::Dbo::ptr<todo_item>> items;
         Wt::Dbo::ptr<application::user> owner;
@@ -37,10 +40,12 @@ typedef size_t id_t;
         template<class Action>
         void persist(Action& a)
         {
-            Wt::Dbo::field(a, title,     "title");
+            Wt::Dbo::field(a, title,        "title");
+            Wt::Dbo::field(a, description,  "description");
+            Wt::Dbo::field(a, modified, "modified");
 
-            Wt::Dbo::hasMany(a, items, Wt::Dbo::ManyToOne, "todo");
-            Wt::Dbo::belongsTo(a, owner, "owner");
+            Wt::Dbo::hasMany(a,     items, Wt::Dbo::ManyToOne, "todo");
+            Wt::Dbo::belongsTo(a,   owner, "owner");
         }
     };
 }

@@ -18,10 +18,6 @@ LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_sessi
 
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
 
-    t->bindString("title", m_current_item->title);
-    t->bindString("description", "A description for this TODO");
-    t->bindString("last-updated", "A few moments ago");
-
     t->bindNew<todo_view>("todo", *m_current_item.modify());
 
     // Wt::Dbo::Transaction transaction(m_session);
