@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Wt/WSignal.h>
 #include <cstdint>
 #include <functional>
 
@@ -25,13 +26,22 @@ class TodoController
     void getTodos(std::vector<Wt::Dbo::ptr<todo>>& todoList) const;
 
     void setCurrentItem(Wt::Dbo::ptr<todo> item);
-    Wt::Dbo::ptr<todo> getCurrentItem() const;
-    void getCurrentItem(std::function<void(Wt::Dbo::ptr<todo>)> const& mutator);
+    Wt::Dbo::ptr<todo> getCurrentTodo() const;
+    void getCurrentTodo(std::function<void(Wt::Dbo::ptr<todo>)> const& mutator);
+
+    void addTodoItem(const std::string& text, bool isDone);
 
     void forEachItem(std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const;
-    void forEachItem(Wt::Dbo::ptr<todo> todo, std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const;
+    void forEachItem(Wt::Dbo::ptr<todo> todo,
+                     std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const;
+
+    Wt::Signal<>& onCurrentTodoChanged() { return signal_CurrentTodoChanged; }
+    Wt::Signal<Wt::Dbo::ptr<todo_item>>& onTodoItemAdded() { return signal_TodoItemAdded; }
 
   private:
+    Wt::Signal<> signal_CurrentTodoChanged{};
+    Wt::Signal<Wt::Dbo::ptr<todo_item>> signal_TodoItemAdded{};
+
     uint32_t m_Year;
 
     application::Session& m_Session;

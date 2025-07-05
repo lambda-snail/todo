@@ -36,17 +36,19 @@ void LambdaSnail::todo::TodoController::getTodos(std::vector<Wt::Dbo::ptr<todo>>
         todoList.push_back(todo);
     }
 }
+
 void LambdaSnail::todo::TodoController::setCurrentItem(Wt::Dbo::ptr<todo> item)
 {
     m_CurrentItem = item;
+    signal_CurrentTodoChanged.emit();
 }
 
-Wt::Dbo::ptr<LambdaSnail::todo::todo> LambdaSnail::todo::TodoController::getCurrentItem() const
+Wt::Dbo::ptr<LambdaSnail::todo::todo> LambdaSnail::todo::TodoController::getCurrentTodo() const
 {
     return m_CurrentItem;
 }
 
-void LambdaSnail::todo::TodoController::getCurrentItem(
+void LambdaSnail::todo::TodoController::getCurrentTodo(
     const std::function<void(Wt::Dbo::ptr<todo>)>& mutator)
 {
     Wt::Dbo::Transaction transaction(m_Session);
@@ -63,4 +65,21 @@ void LambdaSnail::todo::TodoController::forEachItem(Wt::Dbo::ptr<todo> todo, std
     for (auto item : todo->items) {
         function(item);
     }
+}
+
+void LambdaSnail::todo::TodoController::addTodoItem(std::string const& text, bool isDone)
+{
+    if (not m_CurrentItem) {
+        throw std::logic_error("Unable to add todo item to empty todo");
+    }
+
+    Wt::Dbo::Transaction transaction(m_Session);
+
+    auto item = m_Session.addNew<todo_item>();
+    item.modify()->text = text;
+    item.modify()->is_done = isDone;
+
+    m_CurrentItem.modify()->items.insert(item);
+    transaction.commit();
+    signal_TodoItemAdded(item);
 }

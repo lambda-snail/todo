@@ -15,11 +15,19 @@ class todo_view : public Wt::WContainerWidget
     public:
         explicit todo_view(TodoController* todoController);
 
-        void add_item(todo_item_view* item);
         void remove_item(Wt::Dbo::ptr<todo_item> const& item);
+
+        Wt::JSignal<>& onAddTodoItemPressed() { return signal_AddTodoItemPressed; }
     private:
-        Wt::Dbo::ptr<todo> m_item;
         Wt::WContainerWidget* m_ItemContainer;
         TodoController* m_TodoController;
+
+        void addItem();
+        void rebuildView();
+
+        todo_item_view* addTodoItemView(Wt::Dbo::ptr<todo_item> item);
+        void todoItemAdded(Wt::Dbo::ptr<todo_item> item);
+
+        Wt::JSignal<> signal_AddTodoItemPressed;
     };
 }
