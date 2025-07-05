@@ -69,7 +69,7 @@ class todo_application final : public Wt::WApplication
         m_widget_stack = t->bindWidget("main-content", std::make_unique<Wt::WStackedWidget>());
 
         m_todo_page =
-            m_widget_stack->addWidget(std::move(std::make_unique<LambdaSnail::todo::todo_page>()));
+            m_widget_stack->addWidget(std::move(std::make_unique<LambdaSnail::todo::todo_page>(m_session)));
 
         root()->addWidget(std::move(t));
     }
