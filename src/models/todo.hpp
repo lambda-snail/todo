@@ -29,12 +29,16 @@ typedef size_t id_t;
 
     struct todo : public Wt::Dbo::Dbo<todo>
     {
+        std::string title;
+
         Wt::Dbo::collection<Wt::Dbo::ptr<todo_item>> items;
         Wt::Dbo::ptr<application::user> owner;
 
         template<class Action>
         void persist(Action& a)
         {
+            Wt::Dbo::field(a, title,     "title");
+
             Wt::Dbo::hasMany(a, items, Wt::Dbo::ManyToOne, "todo");
             Wt::Dbo::belongsTo(a, owner, "owner");
         }

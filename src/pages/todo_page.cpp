@@ -12,27 +12,33 @@ LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_sessi
 
     //m_current_item =
 
+    // dbo::ptr<User> joe = session.find<User>().where("name = ?").bind("Joe");
     Wt::Dbo::Transaction transaction(m_session);
-    m_current_item = m_session.addNew<todo>();
-    m_current_item.modify()->owner = m_session.user();
-
-    auto item1 = Wt::Dbo::make_ptr<todo_item>();
-    item1.modify()->is_done = true;
-    item1.modify()->text = "Hello TODO";
-
-
-    auto item2 = Wt::Dbo::make_ptr<todo_item>();
-    item2.modify()->is_done = false;
-    item2.modify()->text = "Goodbye TODO";
-
-    m_current_item.modify()->items.insert(item1);
-    m_current_item.modify()->items.insert(item2);
+    m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
 
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
 
-    t->bindString("title", "Hello World Task");
+    t->bindString("title", m_current_item->title);
     t->bindString("description", "A description for this TODO");
     t->bindString("last-updated", "A few moments ago");
 
     t->bindNew<todo_view>("todo", *m_current_item.modify());
+
+    // Wt::Dbo::Transaction transaction(m_session);
+    // m_current_item = m_session.addNew<todo>();
+    // m_current_item.modify()->owner = m_session.user();
+    //
+    // auto item1 = Wt::Dbo::make_ptr<todo_item>();
+    // item1.modify()->is_done = true;
+    // item1.modify()->text = "Hello TODO";
+    //
+    //
+    // auto item2 = Wt::Dbo::make_ptr<todo_item>();
+    // item2.modify()->is_done = false;
+    // item2.modify()->text = "Goodbye TODO";
+    //
+    // m_current_item.modify()->items.insert(item1);
+    // m_current_item.modify()->items.insert(item2);
+    //
+
 }
