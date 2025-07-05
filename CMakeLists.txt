@@ -8,7 +8,7 @@ add_executable(todo main.cpp
         src/components/todo_item_view.hpp
         src/components/todo_view.cpp
         src/components/todo_view.hpp
-        src/todo.hpp
+        src/models/todo.hpp
         src/pages/todo_page.cpp
         src/pages/todo_page.hpp
         src/application/user.hpp
@@ -20,7 +20,9 @@ add_executable(todo main.cpp
         src/pages/authentication_page.cpp
         src/pages/authentication_page.hpp
         src/pages/registration_view.cpp
-        src/pages/registration_view.hpp)
+        src/pages/registration_view.hpp
+        src/controllers/todo_controller.cpp
+        src/controllers/todo_controller.hpp)
 
 target_include_directories(todo PUBLIC src)
 

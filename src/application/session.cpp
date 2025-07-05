@@ -2,6 +2,8 @@
 
 #include "session.hpp"
 
+#include "models/todo.hpp"
+
 LambdaSnail::todo::application::Session::Session(
     std::string const& sqliteDb,
     Wt::Auth::AuthService& auth_service,
@@ -11,6 +13,7 @@ LambdaSnail::todo::application::Session::Session(
         m_password_service(password_service),
         m_oauth_services(oauth_services)
 {
+    // TODO: Use connection pool for entire application instead
     auto connection = std::make_unique<Wt::Dbo::backend::Sqlite3>(sqliteDb);
     //connection->setProperty("show-queries", "true");
     setConnection(std::move(connection));
@@ -19,6 +22,9 @@ LambdaSnail::todo::application::Session::Session(
     mapClass<auth_info_t>("auth_info");
     mapClass<auth_info_t::AuthIdentityType>("auth_identity");
     mapClass<auth_info_t::AuthTokenType>("auth_token");
+
+    mapClass<todo>("todo");
+    mapClass<todo_item>("todo_item");
 
     try {
         createTables();

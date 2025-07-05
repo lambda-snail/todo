@@ -4,21 +4,30 @@
 
 #include <Wt/WContainerWidget.h>
 
+#include "../models/todo.hpp"
 #include "todo_item_view.hpp"
-#include "../todo.hpp"
 
 namespace LambdaSnail::todo
 {
-    class todo_view : public Wt::WContainerWidget
+class TodoController;
+class todo_view : public Wt::WContainerWidget
     {
     public:
-        explicit todo_view(todo& item);
+        explicit todo_view(TodoController* todoController);
 
-        void add_item(todo_item_view* item);
-        void remove_item(todo_item_view::id_t id);
+        void remove_item(Wt::Dbo::ptr<todo_item> const& item);
+
+        Wt::JSignal<>& onAddTodoItemPressed() { return signal_AddTodoItemPressed; }
     private:
-        std::vector<todo_item_view*> m_todo_views{};
+        Wt::WContainerWidget* m_ItemContainer;
+        TodoController* m_TodoController;
 
-        todo& m_item;
+        void addItem();
+        void rebuildView();
+
+        TodoItemView* addTodoItemView(Wt::Dbo::ptr<todo_item> item);
+        void todoItemAdded(Wt::Dbo::ptr<todo_item> item);
+
+        Wt::JSignal<> signal_AddTodoItemPressed;
     };
 }

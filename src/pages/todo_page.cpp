@@ -1,20 +1,47 @@
 #include "todo_page.hpp"
 
-#include "../components/todo_view.hpp"
+#include "components/todo_view.hpp"
+#include "controllers/todo_controller.hpp"
 
+#include <Wt/Dbo/Session.h>
+#include <Wt/WApplication.h>
 #include <Wt/WTemplate.h>
 
-LambdaSnail::todo::todo_page::todo_page()
+LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_session(session)
 {
-    m_current_item = new todo(10);
-    m_current_item->items.emplace_back(1, "Hello TODO", true);
-    m_current_item->items.emplace_back(2, "Bye TODO", false);
+    //m_current_item = new todo; // TODO: Temporary
+
+    //m_current_item =
+
+    // dbo::ptr<User> joe = session.find<User>().where("name = ?").bind("Joe");
+    //Wt::Dbo::Transaction transaction(m_session);
+    //m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
+
+    m_TodoController = std::make_unique<TodoController>(m_session);
+
+    std::vector<Wt::Dbo::ptr<todo>> todos{};
+    m_TodoController->getTodos(todos);
+    m_TodoController->setCurrentItem(todos.front());
 
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
 
-    t->bindString("title", "Hello World Task");
-    t->bindString("description", "A description for this TODO");
-    t->bindString("last-updated", "A few moments ago");
+    t->bindNew<todo_view>("todo", m_TodoController.get());
 
-    t->bindNew<todo_view>("todo", *m_current_item);
+    // Wt::Dbo::Transaction transaction(m_session);
+    // m_current_item = m_session.addNew<todo>();
+    // m_current_item.modify()->owner = m_session.user();
+    //
+    // auto item1 = Wt::Dbo::make_ptr<todo_item>();
+    // item1.modify()->is_done = true;
+    // item1.modify()->text = "Hello TODO";
+    //
+    //
+    // auto item2 = Wt::Dbo::make_ptr<todo_item>();
+    // item2.modify()->is_done = false;
+    // item2.modify()->text = "Goodbye TODO";
+    //
+    // m_current_item.modify()->items.insert(item1);
+    // m_current_item.modify()->items.insert(item2);
+    //
+
 }
