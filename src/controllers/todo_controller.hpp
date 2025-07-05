@@ -29,8 +29,11 @@ class TodoController
     Wt::Dbo::ptr<todo> getCurrentTodo() const;
     void getCurrentTodo(std::function<void(Wt::Dbo::ptr<todo>)> const& mutator);
 
+    //void addTodo();
+    void updateTodo(Wt::Dbo::ptr<todo> todo);
+
     void addTodoItem(const std::string& text, bool isDone);
-    void updateTodoItem(Wt::Dbo::ptr<todo_item>);
+    void updateTodoItem(Wt::Dbo::ptr<todo_item> item);
 
     void forEachItem(std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const;
     void forEachItem(Wt::Dbo::ptr<todo> todo,

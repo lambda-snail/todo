@@ -55,9 +55,21 @@ void LambdaSnail::todo::todo_view::rebuildView()
 
     t->bindString("btn-add-todo-item-call", signal_AddTodoItemPressed.createCall({}));
 
-    t->bindNew<Wt::WInPlaceEdit>("title", currentTodo->title);
-    t->bindNew<Wt::WInPlaceEdit>("description", currentTodo->description);
+    auto titleEditor = t->bindNew<Wt::WInPlaceEdit>("title", currentTodo->title);
+    auto descriptionEditor = t->bindNew<Wt::WInPlaceEdit>("description", currentTodo->description);
     t->bindString("last-updated", currentTodo->modified.toString()); // TODO: "A few moments ago"
+
+    titleEditor->valueChanged().connect([this, titleEditor]() {
+        auto current = m_TodoController->getCurrentTodo();
+        current.modify()->title = titleEditor->text().toUTF8();
+        m_TodoController->updateTodo(current);
+    });
+
+    descriptionEditor->valueChanged().connect([this, descriptionEditor]() {
+        auto current = m_TodoController->getCurrentTodo();
+        current.modify()->description = descriptionEditor->text().toUTF8();
+        m_TodoController->updateTodo(current);
+    });
 
     auto* list_t    = t->bindNew<Wt::WTemplate>("item-list", Wt::WString::tr("todo-list"));
     m_ItemContainer = list_t->bindNew<Wt::WContainerWidget>("items");
@@ -69,8 +81,6 @@ void LambdaSnail::todo::todo_view::rebuildView()
         view->register_on_unchecked([]() { std::cout << "Unchecked" << std::endl; });
     });
 }
-
-
 
 TodoItemView* LambdaSnail::todo::todo_view::addTodoItemView(Wt::Dbo::ptr<todo_item> item)
 {

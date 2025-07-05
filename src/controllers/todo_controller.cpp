@@ -54,6 +54,12 @@ void LambdaSnail::todo::TodoController::getCurrentTodo(
     Wt::Dbo::Transaction transaction(m_Session);
     mutator(m_CurrentItem);
 }
+void LambdaSnail::todo::TodoController::updateTodo(Wt::Dbo::ptr<todo> todo)
+{
+    todo.modify()->modified = Wt::WDateTime::currentDateTime();
+    Wt::Dbo::Transaction transaction(m_Session);
+}
+
 void LambdaSnail::todo::TodoController::forEachItem(std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const
 {
     forEachItem(m_CurrentItem, function);
