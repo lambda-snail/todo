@@ -1,3 +1,4 @@
+#include "controllers/todo_controller.hpp"
 #include "pages/authentication_page.hpp"
 #include "src/application/session.hpp"
 #include "src/components/todo_item_view.hpp"

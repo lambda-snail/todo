@@ -1,10 +1,11 @@
 #include "todo_page.hpp"
 
 #include "components/todo_view.hpp"
+#include "controllers/todo_controller.hpp"
 
+#include <Wt/Dbo/Session.h>
 #include <Wt/WApplication.h>
 #include <Wt/WTemplate.h>
-#include <Wt/Dbo/Session.h>
 
 LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_session(session)
 {
@@ -13,12 +14,18 @@ LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_sessi
     //m_current_item =
 
     // dbo::ptr<User> joe = session.find<User>().where("name = ?").bind("Joe");
-    Wt::Dbo::Transaction transaction(m_session);
-    m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
+    //Wt::Dbo::Transaction transaction(m_session);
+    //m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
+
+    m_TodoController = std::make_unique<TodoController>(m_session);
+
+    std::vector<Wt::Dbo::ptr<todo>> todos{};
+    m_TodoController->getTodos(todos);
+    m_TodoController->setCurrentItem(todos.front());
 
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
 
-    t->bindNew<todo_view>("todo", *m_current_item.modify());
+    t->bindNew<todo_view>("todo", m_TodoController.get());
 
     // Wt::Dbo::Transaction transaction(m_session);
     // m_current_item = m_session.addNew<todo>();

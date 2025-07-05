@@ -7,6 +7,10 @@
 
 namespace LambdaSnail::todo
 {
+class TodoController;
+}
+namespace LambdaSnail::todo
+{
     class todo_page : public Wt::WContainerWidget
     {
     public:
@@ -17,5 +21,7 @@ namespace LambdaSnail::todo
     private:
         application::Session& m_session;
         Wt::Dbo::ptr<todo> m_current_item;
+
+        std::unique_ptr<TodoController> m_TodoController;
     };
 }

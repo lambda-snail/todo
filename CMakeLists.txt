@@ -20,7 +20,9 @@ add_executable(todo main.cpp
         src/pages/authentication_page.cpp
         src/pages/authentication_page.hpp
         src/pages/registration_view.cpp
-        src/pages/registration_view.hpp)
+        src/pages/registration_view.hpp
+        src/controllers/todo_controller.cpp
+        src/controllers/todo_controller.hpp)
 
 target_include_directories(todo PUBLIC src)
 
