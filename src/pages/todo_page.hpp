@@ -11,16 +11,16 @@ class TodoController;
 }
 namespace LambdaSnail::todo
 {
-    class todo_page : public Wt::WContainerWidget
+    class TodoPage : public Wt::WContainerWidget
     {
     public:
-        explicit todo_page(application::Session& session);
+        explicit TodoPage(application::Session& session);
 
         void setCurrentItem(Wt::Dbo::ptr<todo> item);
 
     private:
-        application::Session& m_session;
-        Wt::Dbo::ptr<todo> m_current_item;
+        application::Session& m_Session;
+        Wt::Dbo::ptr<todo> m_CurrentItem;
 
         std::unique_ptr<TodoController> m_TodoController;
     };

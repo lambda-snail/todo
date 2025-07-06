@@ -8,7 +8,7 @@
 #include <Wt/WApplication.h>
 #include <Wt/WTemplate.h>
 
-LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_session(session)
+LambdaSnail::todo::TodoPage::TodoPage(application::Session& session) : m_Session(session)
 {
     //m_current_item = new todo; // TODO: Temporary
 
@@ -18,14 +18,14 @@ LambdaSnail::todo::todo_page::todo_page(application::Session& session) : m_sessi
     //Wt::Dbo::Transaction transaction(m_session);
     //m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
 
-    m_TodoController = std::make_unique<TodoController>(m_session);
+    m_TodoController = std::make_unique<TodoController>(m_Session);
 
     std::vector<Wt::Dbo::ptr<todo>> todos{};
     m_TodoController->getTodos(todos);
     m_TodoController->setCurrentItem(todos.front());
 
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
-    t->bindNew<todo_view>("todo", m_TodoController.get());
+    t->bindNew<TodoView>("todo", m_TodoController.get());
     t->bindNew<TodoSelectionList>("todo-list", m_TodoController.get());
 
 

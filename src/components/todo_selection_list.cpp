@@ -23,6 +23,7 @@ void LambdaSnail::todo::TodoSelectionList::recreateTodoList()
         t->onSelected().connect(this, &LambdaSnail::todo::TodoSelectionList::onListItemClicked);
     });
 }
+
 void LambdaSnail::todo::TodoSelectionList::onListItemClicked(TodoSelectionListItem* todoView)
 {
     if (todoView->getTodo().id() == m_TodoController->getCurrentTodo().id())

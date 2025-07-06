@@ -10,22 +10,22 @@
 #include <Wt/WTemplate.h>
 #include <Wt/WInPlaceEdit.h>
 
-LambdaSnail::todo::todo_view::todo_view(TodoController* todoController) : m_TodoController(todoController), signal_AddTodoItemPressed(this, "addTodoItemPressed")
+LambdaSnail::todo::TodoView::TodoView(TodoController* todoController) : m_TodoController(todoController), signal_AddTodoItemPressed(this, "addTodoItemPressed")
 {
-    m_TodoController->onCurrentTodoChanged().connect(this, &LambdaSnail::todo::todo_view::rebuildView);
-    m_TodoController->onTodoItemAdded().connect(this, &LambdaSnail::todo::todo_view::todoItemAdded);
+    m_TodoController->onCurrentTodoChanged().connect(this, &LambdaSnail::todo::TodoView::rebuildView);
+    m_TodoController->onTodoItemAdded().connect(this, &LambdaSnail::todo::TodoView::todoItemAdded);
 
-    signal_AddTodoItemPressed.connect(this, &LambdaSnail::todo::todo_view::addItem);
+    signal_AddTodoItemPressed.connect(this, &LambdaSnail::todo::TodoView::addItem);
 
     rebuildView();
 }
 
-void LambdaSnail::todo::todo_view::addItem()
+void LambdaSnail::todo::TodoView::addItem()
 {
     m_TodoController->addTodoItem("Enter task ...", false);
 }
 
-void LambdaSnail::todo::todo_view::remove_item(Wt::Dbo::ptr<todo_item> const& item)
+void LambdaSnail::todo::TodoView::remove_item(Wt::Dbo::ptr<todo_item> const& item)
 {
     // auto const view_it = std::ranges::find_if(m_todo_views.begin(), m_todo_views.end(),
     // [item](todo_item_view const* view)
@@ -42,7 +42,7 @@ void LambdaSnail::todo::todo_view::remove_item(Wt::Dbo::ptr<todo_item> const& it
     //
     // refresh();
 }
-void LambdaSnail::todo::todo_view::rebuildView()
+void LambdaSnail::todo::TodoView::rebuildView()
 {
     clear();
 
@@ -82,12 +82,12 @@ void LambdaSnail::todo::todo_view::rebuildView()
     });
 }
 
-TodoItemView* LambdaSnail::todo::todo_view::addTodoItemView(Wt::Dbo::ptr<todo_item> item)
+TodoItemView* LambdaSnail::todo::TodoView::addTodoItemView(Wt::Dbo::ptr<todo_item> item)
 {
     return m_ItemContainer->addNew<TodoItemView>(item, m_TodoController);
 }
 
-void LambdaSnail::todo::todo_view::todoItemAdded(Wt::Dbo::ptr<todo_item> item)
+void LambdaSnail::todo::TodoView::todoItemAdded(Wt::Dbo::ptr<todo_item> item)
 {
     addTodoItemView(item);
 }

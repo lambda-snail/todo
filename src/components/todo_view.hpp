@@ -10,10 +10,10 @@
 namespace LambdaSnail::todo
 {
 class TodoController;
-class todo_view : public Wt::WContainerWidget
+class TodoView : public Wt::WContainerWidget
     {
     public:
-        explicit todo_view(TodoController* todoController);
+        explicit TodoView(TodoController* todoController);
 
         void remove_item(Wt::Dbo::ptr<todo_item> const& item);
 
