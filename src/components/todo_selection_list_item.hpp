@@ -18,7 +18,7 @@ class TodoSelectionListItem : public Wt::WTemplate
     void setSelected(bool isSelected);
     bool isSelected() const { return hasStyleClass("active"); }
     Wt::Dbo::ptr<todo> getTodo() const { return m_Todo; }
-    Wt::Signal<TodoSelectionListItem*>& OnSelected() { return signal_OnSelected; }
+    Wt::Signal<TodoSelectionListItem*>& onSelected() { return signal_OnSelected; }
 
     // Wt::DomElementType domElementType() const override { return Wt::DomElementType::LI; }
 

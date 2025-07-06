@@ -20,22 +20,7 @@ void LambdaSnail::todo::TodoSelectionList::recreateTodoList()
     m_Container->clear();
     m_TodoController->forEachTodo([this](Wt::Dbo::ptr<todo> todo) {
         auto* t = m_Container->addNew<TodoSelectionListItem>(todo);
-
-        t->OnSelected().connect(this, &LambdaSnail::todo::TodoSelectionList::onListItemClicked);
-
-        // t->OnSelected().connect(this, [this](TodoSelectionListItem* todoView) {
-        //     if (not hasStyleClass("active")) {
-        //         removeStyleClass("active");
-        //         doJavaScript(std::format(
-        //             "window.document.getElementById('{}').classList.add('active')", m_ElementId));
-        //         // signal_OnSelected.emit(m_Todo);
-        //     }
-        //     // else {
-        //     //     addStyleClass("active");
-        //     //     doJavaScript(std::format("window.document.getElementById('{}').classList.remove('active')",
-        //     //     m_ElementId));
-        //     // }
-        // };
+        t->onSelected().connect(this, &LambdaSnail::todo::TodoSelectionList::onListItemClicked);
     });
 }
 void LambdaSnail::todo::TodoSelectionList::onListItemClicked(TodoSelectionListItem* todoView)
