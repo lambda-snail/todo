@@ -93,3 +93,21 @@ void LambdaSnail::todo::TodoController::updateTodoItem(Wt::Dbo::ptr<todo_item> i
 {
     Wt::Dbo::Transaction transaction(m_Session);
 }
+
+void LambdaSnail::todo::TodoController::forEachTodo(
+    std::function<void(Wt::Dbo::ptr<todo>)> const& function) const
+{
+    Wt::Dbo::Transaction transaction(m_Session);
+    auto const& result =
+        m_Session
+            .find<todo>()
+            .where("owner_id = ?")
+            .bind(m_Session.user().id())
+            .resultList();
+    //.where("strftime('%Y', modified) = '?'")
+    //.bind(std::to_string(m_Year));
+
+    for (auto const todo : result) {
+        function(todo);
+    }
+}

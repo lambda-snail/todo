@@ -22,7 +22,11 @@ add_executable(todo main.cpp
         src/pages/registration_view.cpp
         src/pages/registration_view.hpp
         src/controllers/todo_controller.cpp
-        src/controllers/todo_controller.hpp)
+        src/controllers/todo_controller.hpp
+        src/components/todo_selection_list.cpp
+        src/components/todo_selection_list.hpp
+        src/components/todo_selection_list_item.cpp
+        src/components/todo_selection_list_item.hpp)
 
 target_include_directories(todo PUBLIC src)
 

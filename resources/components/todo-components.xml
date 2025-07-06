@@ -50,4 +50,19 @@
             </div>
         </div>
     </message>
+
+    <message id="todo-selection-list">
+        <ul class="list-group">
+            ${todo-list}
+        </ul>
+    </message>
+    <message id="todo-selection-list-item">
+        <li id="${id}" class="list-group-item d-flex justify-content-between align-items-start" aria-current="true">
+            <div class="ms-2 me-auto">
+                <div class="fw-bold">${title}</div>
+                ${description}
+            </div>
+            <span class="badge text-bg-light rounded-pill">In progress</span>
+        </li>
+    </message>
 </messages>

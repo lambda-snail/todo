@@ -35,12 +35,14 @@ class TodoController
     void addTodoItem(const std::string& text, bool isDone);
     void updateTodoItem(Wt::Dbo::ptr<todo_item> item);
 
+    void forEachTodo(std::function<void(Wt::Dbo::ptr<todo>)> const& function) const;
     void forEachItem(std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const;
     void forEachItem(Wt::Dbo::ptr<todo> todo,
                      std::function<void(Wt::Dbo::ptr<todo_item>)> const& function) const;
 
     Wt::Signal<>& onCurrentTodoChanged() { return signal_CurrentTodoChanged; }
     Wt::Signal<Wt::Dbo::ptr<todo_item>>& onTodoItemAdded() { return signal_TodoItemAdded; }
+
 
   private:
     Wt::Signal<> signal_CurrentTodoChanged{};
