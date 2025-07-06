@@ -15,6 +15,8 @@ public:
     explicit TodoSelectionList(TodoController* todoController);
     void recreateTodoList();
 
+    void addTodo(Wt::Dbo::ptr<class todo> todo);
+
 private:
     TodoController* m_TodoController;
     WContainerWidget* m_Container;

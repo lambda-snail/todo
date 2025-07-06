@@ -10,7 +10,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <button class="btn btn-outline-success me-2" type="button">New</button>
+                        <button onclick="${btn-add-todo-call}" class="btn btn-outline-success me-2" type="button">New</button>
                         <button class="btn btn-outline-danger me-2" type="button">Delete</button>
                     </ul>
                     <form class="d-flex" role="search">

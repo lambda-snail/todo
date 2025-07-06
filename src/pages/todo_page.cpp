@@ -8,15 +8,16 @@
 #include <Wt/WApplication.h>
 #include <Wt/WTemplate.h>
 
-LambdaSnail::todo::TodoPage::TodoPage(application::Session& session) : m_Session(session)
+LambdaSnail::todo::TodoPage::TodoPage(application::Session& session)
+    : signal_AddTodoPressed(this, "addTodo"), m_Session(session)
 {
-    //m_current_item = new todo; // TODO: Temporary
+    // m_current_item = new todo; // TODO: Temporary
 
-    //m_current_item =
+    // m_current_item =
 
     // dbo::ptr<User> joe = session.find<User>().where("name = ?").bind("Joe");
-    //Wt::Dbo::Transaction transaction(m_session);
-    //m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
+    // Wt::Dbo::Transaction transaction(m_session);
+    // m_current_item = m_session.find<todo>().where("owner_id = ?").bind(m_session.user().id());
 
     m_TodoController = std::make_unique<TodoController>(m_Session);
 
@@ -27,6 +28,9 @@ LambdaSnail::todo::TodoPage::TodoPage(application::Session& session) : m_Session
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
     t->bindNew<TodoView>("todo", m_TodoController.get());
     t->bindNew<TodoSelectionList>("todo-list", m_TodoController.get());
+
+    t->bindString("btn-add-todo-call", signal_AddTodoPressed.createCall({}));
+    signal_AddTodoPressed.connect(this, &LambdaSnail::todo::TodoPage::addTodo);
 
 
     // Wt::Dbo::Transaction transaction(m_session);
@@ -45,5 +49,8 @@ LambdaSnail::todo::TodoPage::TodoPage(application::Session& session) : m_Session
     // m_current_item.modify()->items.insert(item1);
     // m_current_item.modify()->items.insert(item2);
     //
-
+}
+void LambdaSnail::todo::TodoPage::addTodo()
+{
+    m_TodoController->createNewStubTodo();
 }

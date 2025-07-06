@@ -29,7 +29,7 @@ class TodoController
     Wt::Dbo::ptr<todo> getCurrentTodo() const;
     void getCurrentTodo(std::function<void(Wt::Dbo::ptr<todo>)> const& mutator);
 
-    //void addTodo();
+    void createNewStubTodo();
     void updateTodo(Wt::Dbo::ptr<todo> todo);
 
     void addTodoItem(const std::string& text, bool isDone);
@@ -42,11 +42,12 @@ class TodoController
 
     Wt::Signal<>& onCurrentTodoChanged() { return signal_CurrentTodoChanged; }
     Wt::Signal<Wt::Dbo::ptr<todo_item>>& onTodoItemAdded() { return signal_TodoItemAdded; }
-
+    Wt::Signal<Wt::Dbo::ptr<todo>>& onTodoAdded() { return signal_TodoAdded; }
 
   private:
     Wt::Signal<> signal_CurrentTodoChanged{};
     Wt::Signal<Wt::Dbo::ptr<todo_item>> signal_TodoItemAdded{};
+    Wt::Signal<Wt::Dbo::ptr<todo>> signal_TodoAdded{};
 
     uint32_t m_Year;
 

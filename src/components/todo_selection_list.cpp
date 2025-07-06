@@ -12,6 +12,8 @@ LambdaSnail::todo::TodoSelectionList::TodoSelectionList(TodoController* todoCont
     auto* t     = addNew<Wt::WTemplate>(Wt::WString::tr("todo-selection-list"));
     m_Container = t->bindNew<Wt::WContainerWidget>("todo-list");
 
+    m_TodoController->onTodoAdded().connect(this, &TodoSelectionList::addTodo);
+
     recreateTodoList();
 }
 
@@ -19,9 +21,15 @@ void LambdaSnail::todo::TodoSelectionList::recreateTodoList()
 {
     m_Container->clear();
     m_TodoController->forEachTodo([this](Wt::Dbo::ptr<todo> todo) {
-        auto* t = m_Container->addNew<TodoSelectionListItem>(todo);
-        t->onSelected().connect(this, &LambdaSnail::todo::TodoSelectionList::onListItemClicked);
+        addTodo(todo);
     });
+}
+
+void LambdaSnail::todo::TodoSelectionList::addTodo(Wt::Dbo::ptr<todo> todo)
+{
+    auto* t = m_Container->addNew<TodoSelectionListItem>(todo);
+    t->onSelected().connect(this, &LambdaSnail::todo::TodoSelectionList::onListItemClicked);
+    onListItemClicked(t);
 }
 
 void LambdaSnail::todo::TodoSelectionList::onListItemClicked(TodoSelectionListItem* todoView)

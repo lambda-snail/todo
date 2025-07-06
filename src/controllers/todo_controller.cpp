@@ -1,7 +1,3 @@
-//
-// Created by niclas on 7/5/25.
-//
-
 #include "todo_controller.hpp"
 
 #include <Wt/WDate.h>
@@ -54,6 +50,21 @@ void LambdaSnail::todo::TodoController::getCurrentTodo(
     Wt::Dbo::Transaction transaction(m_Session);
     mutator(m_CurrentItem);
 }
+
+void LambdaSnail::todo::TodoController::createNewStubTodo()
+{
+    Wt::Dbo::Transaction transaction(m_Session);
+
+    auto todo                   = m_Session.addNew<LambdaSnail::todo::todo>();
+    todo.modify()->title        = "New TODO";
+    todo.modify()->description  = "Enter description here";
+    todo.modify()->modified     = Wt::WDateTime::currentDateTime();
+    todo.modify()->owner        = m_Session.user();
+
+    transaction.commit();
+    signal_TodoAdded(todo);
+}
+
 void LambdaSnail::todo::TodoController::updateTodo(Wt::Dbo::ptr<todo> todo)
 {
     todo.modify()->modified = Wt::WDateTime::currentDateTime();
