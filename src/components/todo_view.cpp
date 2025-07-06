@@ -76,9 +76,6 @@ void LambdaSnail::todo::TodoView::rebuildView()
 
     m_TodoController->forEachItem([this](Wt::Dbo::ptr<todo_item> const item) {
         auto* view = addTodoItemView(item);
-
-        view->register_on_checked([]() { std::cout << "Checked" << std::endl; });
-        view->register_on_unchecked([]() { std::cout << "Unchecked" << std::endl; });
     });
 }
 

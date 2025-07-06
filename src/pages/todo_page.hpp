@@ -16,8 +16,6 @@ namespace LambdaSnail::todo
     public:
         explicit TodoPage(application::Session& session);
 
-        void setCurrentItem(Wt::Dbo::ptr<todo> item);
-
     private:
         application::Session& m_Session;
         Wt::Dbo::ptr<todo> m_CurrentItem;
