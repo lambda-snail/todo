@@ -23,7 +23,10 @@ LambdaSnail::todo::TodoPage::TodoPage(application::Session& session)
 
     std::vector<Wt::Dbo::ptr<todo>> todos{};
     m_TodoController->getTodos(todos);
-    m_TodoController->setCurrentItem(todos.front());
+    if (not todos.empty())
+    {
+        m_TodoController->setCurrentItem(todos.front());
+    }
 
     auto* t = addNew<Wt::WTemplate>(Wt::WString::tr("todo-page"));
     t->bindNew<TodoView>("todo", m_TodoController.get());
