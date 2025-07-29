@@ -142,14 +142,9 @@ void configure_auth(Wt::Auth::AuthService& auth_service,
     }
 
     for (const auto& oAuthService : oauth_services) {
-        oAuthService->generateRedirectEndpoint();
+        std::ignore = oAuthService->generateRedirectEndpoint();
     }
 }
-
-// <label for="${id:favourite-pet}">Favourite pet:
-//                     ${name class="Wt-info"}
-// </label>
-// ${favourite-pet}
 
 int main(int argc, char** argv)
 {
