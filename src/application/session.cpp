@@ -1,8 +1,12 @@
 #include <Wt/Dbo/backend/Sqlite3.h>
+#include <Wt/Dbo/backend/Postgres.h>
 
 #include "session.hpp"
 
 #include "models/todo.hpp"
+#include "pages/authentication_page.hpp"
+
+#include <sys/socket.h>
 
 LambdaSnail::todo::application::Session::Session(
     std::string const& sqliteDb,
@@ -14,7 +18,10 @@ LambdaSnail::todo::application::Session::Session(
         m_oauth_services(oauth_services)
 {
     // TODO: Use connection pool for entire application instead
-    auto connection = std::make_unique<Wt::Dbo::backend::Sqlite3>(sqliteDb);
+    // TODO: Connection string hard coded for development only
+    auto connection = std::make_unique<Wt::Dbo::backend::Postgres>("postgresql://localhost/todo?user=todo-app&password=abc123");
+
+    // Enable for debugging db interactions
     //connection->setProperty("show-queries", "true");
     setConnection(std::move(connection));
 

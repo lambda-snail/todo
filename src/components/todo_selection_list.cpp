@@ -14,7 +14,7 @@ LambdaSnail::todo::TodoSelectionList::TodoSelectionList(TodoController* todoCont
 
     m_TodoController->onTodoAdded().connect(this, &TodoSelectionList::addTodo);
 
-    recreateTodoList();
+    recreateTodoList();  
 }
 
 void LambdaSnail::todo::TodoSelectionList::recreateTodoList()

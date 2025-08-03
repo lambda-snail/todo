@@ -30,7 +30,7 @@ add_executable(todo main.cpp
 
 target_include_directories(todo PUBLIC src)
 
-target_link_libraries(todo PUBLIC wt wthttp wtdbo wtdbosqlite3)
+target_link_libraries(todo PUBLIC wt wthttp wtdbo wtdbosqlite3 wtdbopostgres)
 
 add_custom_command(
         TARGET todo PRE_BUILD

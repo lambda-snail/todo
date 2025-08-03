@@ -101,7 +101,7 @@ class todo_application final : public Wt::WApplication
             if (path == "/list") {
                 m_widget_stack->setCurrentWidget(m_todo_page);
             }
-            else
+            else 
             {
                 //WApplication::instance()->setInternalPath("/play", true);
             }
